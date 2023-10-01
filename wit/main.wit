@@ -1,0 +1,42 @@
+package ilhan:golem-poll
+
+interface api {
+  record poll {
+    owner-email: string,
+    title: string,
+    end: s64,
+    questions: list<question>,
+  }
+
+  record response-creation {
+    user-token: string,
+    answers: list<u32>
+  }
+
+  record question {
+    text: string,
+    answers: list<string>
+  }
+
+  record poll-data {
+    poll: poll,
+    open: bool,
+    responses: list<response>
+  }
+
+  record response {
+    user: string,
+    answers: list<u32>
+  }
+
+  create: func(poll-data: poll) -> result<poll, string>
+  respond: func(answer: response-creation) -> result<_, string>
+  get: func(access-token: string) -> result<poll-data, string>
+  close: func(access-token: string) -> result<_, string>
+  delete: func(access-token: string) -> result<_, string>
+}
+
+world poll {
+  import wasi:cli/environment
+  export api
+}
